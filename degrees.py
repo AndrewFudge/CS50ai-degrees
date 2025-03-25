@@ -58,9 +58,7 @@ def main():
     directory = sys.argv[1] if len(sys.argv) == 2 else "large"
 
     # Load data from files into memory
-    print("Loading data...")
     load_data(directory)
-    print("Data loaded.")
 
     source = person_id_for_name(input("Name: "))
     if source is None:
@@ -72,16 +70,13 @@ def main():
     path = shortest_path(source, target)
 
     if path is None:
-        print("Not connected.")
     else:
         degrees = len(path)
-        print(f"{degrees} degrees of separation.")
         path = [(None, source)] + path
         for i in range(degrees):
             person1 = people[path[i][1]]["name"]
             person2 = people[path[i + 1][1]]["name"]
             movie = movies[path[i + 1][0]]["title"]
-            print(f"{i + 1}: {person1} and {person2} starred in {movie}")
 
 
 def shortest_path(source, target):
@@ -91,72 +86,40 @@ def shortest_path(source, target):
 
     If no possible path, returns None.
     """
-    # return list [(1,2),(3,4)]
-    # means source actor was in movie 1 with actor 2
-    # actor 2 was with actor 4 in movie 3
-    # actor 4 was the target
-
     # Breadth First Search
-    # call neighbours_for_person
-    # returns set of connected movies
-    # check if each movie contains target 
-    # if so, soultion, connect the dots
-    # if not check each movie for each actor
-    # save somehow
-    # repeat
-    print(f'source is {source} and looking for target {target}')
     if source == target:
         return []
+    # Build the Frontier and populate nodes
     main_stack = QueueFrontier()
     main_list = neighbors_for_person(source)
     for each in main_list:
-        # print(each)
         if each[1] == target:
-            print('found target in first run...')
             return [each]
         node = Node(each, None, [each])
         main_stack.add(node)
     # start working on nodes
-    # print('main stack is:')
-    # print(main_stack.frontier)
     explored = set()
     min_connections = float('inf')
     connections_route = None
     while len(main_stack.frontier) > 0:
         working_node = main_stack.remove()
-        print('working on node')
-        print(working_node.state)
         explored.add(working_node.state)
         # state is actor and movie
-        # parent is node before so node (it'll keep track)
-        # action is list of movie and actor
-
+        # parent is node before (it'll keep track)
+        # action is list of (movie, actor)
         movie, actor = working_node.state
-        print(f'movie id is {movie}, actor id is {actor}')
         movie_set = neighbors_for_person(actor)
         for each in movie_set:
-            # print(each)
             action = working_node.action[:]
             action.append(each)
-            print('should be true')
-            print(action is not working_node.action)
             if each[1] == target:
-                print('found target...')
-                print(action)
-                print('')
                 if len(action) < min_connections:
-                    print(f'{len(action)} is less than {min_connections}')
                     connections_route = action
                     min_connections = len(action)
             else:
                 node = Node(each, working_node, action)
                 if each not in explored:
-                    # print(f'{each} isnt in set')
                     main_stack.add(node)
-    print(explored)
-    print(f'action list is {min_connections}')
-    print(connections_route)
-
     return connections_route
 
 
@@ -169,12 +132,10 @@ def person_id_for_name(name):
     if len(person_ids) == 0:
         return None
     elif len(person_ids) > 1:
-        print(f"Which '{name}'?")
         for person_id in person_ids:
             person = people[person_id]
             name = person["name"]
             birth = person["birth"]
-            print(f"ID: {person_id}, Name: {name}, Birth: {birth}")
         try:
             person_id = input("Intended Person ID: ")
             if person_id in person_ids:
