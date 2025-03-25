@@ -91,9 +91,45 @@ def shortest_path(source, target):
 
     If no possible path, returns None.
     """
+    # return list [(1,2),(3,4)]
+    # means source actor was in movie 1 with actor 2
+    # actor 2 was with actor 4 in movie 3
+    # actor 4 was the target
+
+    # Breadth First Search
+    # call neighbours_for_person
+    # returns set of connected movies
+    # check if each movie contains target 
+    # if so, soultion, connect the dots
+    # if not check each movie for each actor
+    # save somehow
+    # repeat
+
+    main_stack = QueueFrontier()
+    main_list = neighbors_for_person(source)
+    for each in main_list:
+        print(each)
+        if each[1] == target:
+            print('found target in first run...')
+            return [each]
+        node = Node(each, None, None)
+        main_stack.add(node)
+    # start working on nodes
+    print('main stack is:')
+    print(main_stack.frontier)
+    while len(main_stack.frontier) > 0:
+        working_node = main_stack.remove()
+        print('working on node')
+        print(working_node)
+        # state is actor and movie
+        # parent is node before so node (it'll keep track)
+        # action is list of movie and actor
+        movie_set = neighbors_for_person(working_node.state[1])
+        print(movie_set)
 
     # TODO
-    raise NotImplementedError
+    # raise NotImplementedError
+    return None
 
 
 def person_id_for_name(name):
