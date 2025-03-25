@@ -105,6 +105,8 @@ def shortest_path(source, target):
     # save somehow
     # repeat
     print(f'source is {source} and looking for target {target}')
+    if source == target:
+        return []
     main_stack = QueueFrontier()
     main_list = neighbors_for_person(source)
     for each in main_list:
@@ -152,11 +154,9 @@ def shortest_path(source, target):
                     # print(f'{each} isnt in set')
                     main_stack.add(node)
     print(explored)
-    print(f'action list is {len(connections_route)}')
+    print(f'action list is {min_connections}')
     print(connections_route)
 
-    # TODO
-    # raise NotImplementedError
     return connections_route
 
 
