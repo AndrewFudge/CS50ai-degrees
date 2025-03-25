@@ -104,32 +104,60 @@ def shortest_path(source, target):
     # if not check each movie for each actor
     # save somehow
     # repeat
-
+    print(f'source is {source} and looking for target {target}')
     main_stack = QueueFrontier()
     main_list = neighbors_for_person(source)
     for each in main_list:
-        print(each)
+        # print(each)
         if each[1] == target:
             print('found target in first run...')
             return [each]
-        node = Node(each, None, None)
+        node = Node(each, None, [each])
         main_stack.add(node)
     # start working on nodes
-    print('main stack is:')
-    print(main_stack.frontier)
+    # print('main stack is:')
+    # print(main_stack.frontier)
+    explored = set()
+    min_connections = float('inf')
+    connections_route = None
     while len(main_stack.frontier) > 0:
         working_node = main_stack.remove()
         print('working on node')
-        print(working_node)
+        print(working_node.state)
+        explored.add(working_node.state)
         # state is actor and movie
         # parent is node before so node (it'll keep track)
         # action is list of movie and actor
-        movie_set = neighbors_for_person(working_node.state[1])
-        print(movie_set)
+
+        movie, actor = working_node.state
+        print(f'movie id is {movie}, actor id is {actor}')
+        movie_set = neighbors_for_person(actor)
+        for each in movie_set:
+            # print(each)
+            action = working_node.action[:]
+            action.append(each)
+            print('should be true')
+            print(action is not working_node.action)
+            if each[1] == target:
+                print('found target...')
+                print(action)
+                print('')
+                if len(action) < min_connections:
+                    print(f'{len(action)} is less than {min_connections}')
+                    connections_route = action
+                    min_connections = len(action)
+            else:
+                node = Node(each, working_node, action)
+                if each not in explored:
+                    # print(f'{each} isnt in set')
+                    main_stack.add(node)
+    print(explored)
+    print(f'action list is {len(connections_route)}')
+    print(connections_route)
 
     # TODO
     # raise NotImplementedError
-    return None
+    return connections_route
 
 
 def person_id_for_name(name):
