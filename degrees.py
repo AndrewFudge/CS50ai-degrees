@@ -58,7 +58,9 @@ def main():
     directory = sys.argv[1] if len(sys.argv) == 2 else "large"
 
     # Load data from files into memory
+    print("Loading data...")
     load_data(directory)
+    print("Data loaded.")
 
     source = person_id_for_name(input("Name: "))
     if source is None:
@@ -70,13 +72,16 @@ def main():
     path = shortest_path(source, target)
 
     if path is None:
+        print("Not connected.")
     else:
         degrees = len(path)
+        print(f"{degrees} degrees of separation.")
         path = [(None, source)] + path
         for i in range(degrees):
             person1 = people[path[i][1]]["name"]
             person2 = people[path[i + 1][1]]["name"]
             movie = movies[path[i + 1][0]]["title"]
+            print(f"{i + 1}: {person1} and {person2} starred in {movie}")
 
 
 def shortest_path(source, target):
@@ -132,10 +137,12 @@ def person_id_for_name(name):
     if len(person_ids) == 0:
         return None
     elif len(person_ids) > 1:
+        print(f"Which '{name}'?")
         for person_id in person_ids:
             person = people[person_id]
             name = person["name"]
             birth = person["birth"]
+            print(f"ID: {person_id}, Name: {name}, Birth: {birth}")
         try:
             person_id = input("Intended Person ID: ")
             if person_id in person_ids:
